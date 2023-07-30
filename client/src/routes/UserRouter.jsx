@@ -5,8 +5,8 @@ import ListUser from '../pages/User/ListUser';
 function UserRouter() {
     return (
         <Routes>
+            <Route path='/' element={<ListUser/>} />
             <Route  path='/add-user' element={<Register/>} />
-            <Route path='/list-user' element={<ListUser/>} />
 
         </Routes>
     )

@@ -1,14 +1,13 @@
 const expressAsyncHandler = require("express-async-handler");
 const AppError = require("../utils/error");
 const userCollection = require('../model/userModel');
-const { findUserByPhone } = require("../helper/authHepler");
+const { findUserByPhone, getAllUsers, deleteUserById } = require("../helper/userHepler");
 
 
-//signup
+//add user
 const register = expressAsyncHandler(async (req, res) => {
     let { name, phone, email, address } = req.body;
     if (!name || !phone || !email || !address) throw new AppError(400, "All fields required");
-    console.log(req.body);
     let userExist = await findUserByPhone(phone);
     if (userExist) {
         throw new AppError(409, "user already exists");
@@ -28,8 +27,23 @@ const register = expressAsyncHandler(async (req, res) => {
     }
 })
 
+const getUsers=expressAsyncHandler(async(req,res)=>{
+    let userList=await getAllUsers();
+    res.json({user:userList})
+})
+
+const deleteUser=expressAsyncHandler(async(req,res)=>{
+    const {id}=req.params;
+    if(!id) throw new AppError(400,'bad request');
+
+    const result= await deleteUserById(id);
+    res.json({status:true})
+})
+
 
 
 module.exports = {
-    register
+    register,
+    getUsers,
+    deleteUser
 }

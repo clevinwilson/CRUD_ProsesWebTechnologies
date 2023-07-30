@@ -40,7 +40,7 @@ function RegisterForm() {
                 toast.success("User added successfully", {
                     position: "top-right",
                 });
-                navigate('/list-user');
+                navigate('/');
             })
             .catch((err) => {
                 toast.error(err.error.message, {
