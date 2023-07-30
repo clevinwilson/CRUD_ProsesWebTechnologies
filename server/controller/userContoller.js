@@ -1,7 +1,7 @@
 const expressAsyncHandler = require("express-async-handler");
 const AppError = require("../utils/error");
 const userCollection = require('../model/userModel');
-const { findUserByPhone, getAllUsers, deleteUserById } = require("../helper/userHepler");
+const { findUserByPhone, getAllUsers, deleteUserById, findUserById, updateUserById } = require("../helper/userHepler");
 
 
 //add user
@@ -27,23 +27,41 @@ const register = expressAsyncHandler(async (req, res) => {
     }
 })
 
-const getUsers=expressAsyncHandler(async(req,res)=>{
-    let userList=await getAllUsers();
-    res.json({user:userList})
+const getUsers = expressAsyncHandler(async (req, res) => {
+    let userList = await getAllUsers();
+    res.json({ user: userList })
 })
 
-const deleteUser=expressAsyncHandler(async(req,res)=>{
-    const {id}=req.params;
-    if(!id) throw new AppError(400,'bad request');
+const deleteUser = expressAsyncHandler(async (req, res) => {
+    const { id } = req.params;
+    if (!id) throw new AppError(400, 'bad request');
 
-    const result= await deleteUserById(id);
+    const result = await deleteUserById(id);
+    res.json({ status: true })
+})
+
+const getUserDetails = expressAsyncHandler(async (req, res) => {
+    const { id } = req.params;
+    if (!id) throw new AppError(400, 'bad request');
+    const user = await findUserById(id);
+    res.json({ status: true, user })
+})
+
+const updateUserDetails = expressAsyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { name, email, phone, address } = req.body;
+    if (!id || !name || !email || !phone || !address) throw new AppError(400, 'bad request');
+
+    const user = await updateUserById(id, name, email, phone, address);
+    if (!user) throw new Error("something went wrong")
     res.json({status:true})
 })
-
 
 
 module.exports = {
     register,
     getUsers,
-    deleteUser
+    deleteUser,
+    getUserDetails,
+    updateUserDetails
 }

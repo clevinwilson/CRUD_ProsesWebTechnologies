@@ -1,12 +1,37 @@
 import { ErrorMessage, Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { addUser } from '../services/userApi';
+import { addUser, getUserDetails, updateUserDetails } from '../services/userApi';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
-function RegisterForm() {
+function UserForm({ title, button, role }) {
+    const [initialValues, setUnitialValues] = useState({ name: '', email: '', phone: '', address: '' })
 
     const navigate = useNavigate();
+
+    const { id } = useParams();
+
+    useEffect(() => {
+        if (role === 'edit') {
+            getUserDetails(id)
+                .then((response) => {
+                    console.log(response.data.user.name);
+                    setUnitialValues({
+                        name: response.data.user.name,
+                        email: response.data.user.email,
+                        phone: response.data.user.phone,
+                        address: response.data.user.address
+                    })
+                })
+                .catch((err) => {
+                    toast.error(err.error.message, {
+                        position: "top-right",
+                    });
+                })
+        }
+    }, [id, role])
+
 
     //Yup form validation
     const validate = Yup.object({
@@ -26,40 +51,53 @@ function RegisterForm() {
             .required("Please provide Address")
     });
 
-    //formik state
-    const initialValues = {
-        name: '',
-        email: '',
-        phone: '',
-        address: ''
-    }
+
     //submiting the form data
     const onSubmit = (values) => {
-        addUser(values)
-            .then(() => {
-                toast.success("User added successfully", {
-                    position: "top-right",
-                });
-                navigate('/');
-            })
-            .catch((err) => {
-                toast.error(err.error.message, {
-                    position: "top-right",
-                });
-            })
+        //addin a new user
+        if (role == 'add') {
+            addUser(values)
+                .then(() => {
+                    toast.success("User added successfully", {
+                        position: "top-right",
+                    });
+                    navigate('/');
+                })
+                .catch((err) => {
+                    toast.error(err.error.message, {
+                        position: "top-right",
+                    });
+                })
+        } else if (role === 'edit') {
+            //updating the user detail in edit page
+            updateUserDetails(id,values)
+                .then((response) => {
+                    if (response.data.status) {
+                        toast.success("User details Updated successfully", {
+                            position: "top-right",
+                        });
+                    }
+                })
+                .catch((err) => {
+                    toast.error(err.error.message, {
+                        position: "top-right",
+                    });
+                })
+        }
     }
 
 
     return (
         <section className="bg-gray-50 dark:bg-gray-900">
             <Formik initialValues={initialValues}
+                enableReinitialize={true}
                 validationSchema={validate}
                 onSubmit={onSubmit}>
                 <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto h-screen lg:py-0">
                     <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
                         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
                             <h1 className="text-xl font-bold leading-tight tracking-tight text-center text-gray-900 md:text-2xl dark:text-white">
-                                Add User
+                                {title}
                             </h1>
                             <Form className="space-y-4 md:space-y-6" >
 
@@ -95,7 +133,7 @@ function RegisterForm() {
                                     </ErrorMessage>
                                 </div>
 
-                                <button type="submit" className="w-full  bg-primary-600 bg-blue-600  font-medium rounded-lg text-sm px-5 py-2.5 text-center text-white ">Add User</button>
+                                <button type="submit" className="w-full  bg-primary-600 bg-blue-600  font-medium rounded-lg text-sm px-5 py-2.5 text-center text-white ">{button}</button>
                             </Form>
                         </div>
                     </div>
@@ -105,4 +143,4 @@ function RegisterForm() {
     )
 }
 
-export default RegisterForm
+export default UserForm

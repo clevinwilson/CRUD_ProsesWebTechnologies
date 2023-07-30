@@ -1,9 +1,9 @@
-import RegisterForm from "../../components/RegisterForm"
+import RegisterForm from "../../components/UserForm"
 
 function Register() {
   return (
     <>
-    <RegisterForm/>
+      <RegisterForm title={'Add User'} button={'Add'} role={'add'} />
     </>
   )
 }

@@ -10,5 +10,18 @@ module.exports = {
     },
     deleteUserById:async(id)=>{
         return await userCollection.deleteOne({_id:id});
+    },
+    findUserById:async(id)=>{
+        return await userCollection.findOne({_id:id})
+    },
+    updateUserById: async(id, name, email, phone, address)=>{
+        return await userCollection.updateOne({_id:id},{
+            $set:{
+                name,
+                email,
+                phone,
+                address
+            }
+        })
     }
 }

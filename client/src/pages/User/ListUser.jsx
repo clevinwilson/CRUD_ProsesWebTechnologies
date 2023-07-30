@@ -3,9 +3,11 @@ import Header from "../../components/Header"
 import UserCard from "../../components/UserCard"
 import { deleteUser, getUsers } from "../../services/userApi";
 import { toast } from 'react-toastify';
+import { useNavigate } from "react-router-dom";
 
 function ListUser() {
     const [userList, setUserList] = useState([]);
+    const navigate=useNavigate();
 
     useEffect(() => {
         getUsers()
@@ -45,7 +47,10 @@ function ListUser() {
                     position: "top-right",
                 });
             })
+    }
 
+    const hadleEditUser=(id)=>{
+        navigate(`/edit-user/${id}`)
     }
 
     return (
@@ -61,7 +66,7 @@ function ListUser() {
                         {
                             userList.map((user, index) => {
                                 return (
-                                    <UserCard key={index} user={user} deleteUser={handleDeleteUser} />
+                                    <UserCard key={index} user={user} deleteUser={handleDeleteUser} editUser={hadleEditUser} />
                                 )
                             })
                         }
