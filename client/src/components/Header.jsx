@@ -10,7 +10,7 @@ function Header() {
                     </a>
                     <div className="flex items-center lg:order-2">
                         <Link to={'/add-user'}>
-                            <a className="text-white  hover:bg-gray-50  font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 bg-blue-600 dark:hover:bg-blue-800 focus:outline-none dark:focus:ring-gray-800">Add User</a>
+                            <a className="text-white  hover:bg-gray-50  font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 bg-blue-600 dark:hover:bg-blue-800 focus:outline-none dark:focus:ring-gray-800">Add user</a>
                         </Link>
                         {/* <a href="#" className="text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:bg-primary-600 bg-blue-600 dark:hover:bg-primary-800 ">Get started</a> */}
                     </div>

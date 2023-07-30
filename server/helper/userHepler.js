@@ -14,13 +14,14 @@ module.exports = {
     findUserById:async(id)=>{
         return await userCollection.findOne({_id:id})
     },
-    updateUserById: async(id, name, email, phone, address)=>{
+    updateUserById: async (id, name, email, phone, address, image)=>{
         return await userCollection.updateOne({_id:id},{
             $set:{
                 name,
                 email,
                 phone,
-                address
+                address,
+                avatar: image
             }
         })
     }

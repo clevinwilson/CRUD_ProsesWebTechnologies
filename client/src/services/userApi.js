@@ -2,7 +2,7 @@ import axiosInstance from '../axios/axios'
 
 //addUser
 export const addUser = (values) => {
-    return axiosInstance().post("/register", { ...values });
+    return axiosInstance().post("/register", { ...values }, { headers: { "Content-Type": "multipart/form-data" } });
 }
 
 export const getUsers=()=>{
@@ -17,5 +17,5 @@ export const getUserDetails=(id)=>{
 }
 
 export const updateUserDetails = (id,values) => {
-    return axiosInstance().put(`/user/${id}`,{...values});
+    return axiosInstance().put(`/user/${id}`, { ...values }, { headers: { "Content-Type": "multipart/form-data" } });
 }

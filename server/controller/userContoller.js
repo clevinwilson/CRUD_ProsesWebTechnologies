@@ -6,8 +6,11 @@ const { findUserByPhone, getAllUsers, deleteUserById, findUserById, updateUserBy
 
 //add user
 const register = expressAsyncHandler(async (req, res) => {
+    let image = req.files.image[0].path;
+    image = image.replace('public', "");
+
     let { name, phone, email, address } = req.body;
-    if (!name || !phone || !email || !address) throw new AppError(400, "All fields required");
+    if (!image || !name || !phone || !email || !address) throw new AppError(400, "All fields required");
     let userExist = await findUserByPhone(phone);
     if (userExist) {
         throw new AppError(409, "user already exists");
@@ -16,7 +19,8 @@ const register = expressAsyncHandler(async (req, res) => {
             name,
             phone,
             email,
-            address
+            address,
+            avatar: image
         });
 
         await user.save();
@@ -48,13 +52,23 @@ const getUserDetails = expressAsyncHandler(async (req, res) => {
 })
 
 const updateUserDetails = expressAsyncHandler(async (req, res) => {
+    let image = req.files.image[0].path;
+    image = image.replace('public', "");
+
     const { id } = req.params;
     const { name, email, phone, address } = req.body;
+
+    let user = await findUserById(id)
+    if (!user) throw new AppError(400, 'User not exist');
+
+    //if image file not in the request seting old image
+    if (!image) image = user.avatar;
+
     if (!id || !name || !email || !phone || !address) throw new AppError(400, 'bad request');
 
-    const user = await updateUserById(id, name, email, phone, address);
-    if (!user) throw new Error("something went wrong")
-    res.json({status:true})
+    const updateUser = await updateUserById(id, name, email, phone, address, image);
+    if (!updateUser) throw new Error("something went wrong")
+    res.json({ status: true })
 })
 
 
